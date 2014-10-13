@@ -4,7 +4,7 @@ You need node js to compile files.
 
 Then
 
-    npm init
+    npm install
 
 To compile files, this will also watch files for changes and recompile them
 
