@@ -5,9 +5,9 @@ mainState = {
     this.stage.backgroundColor = '#000000';
     this.stage.smoothed=false
     PIXI.scaleModes.DEFAULT = PIXI.scaleModes.NEAREST
-    this.load.image('background', '/images/background.jpg');
-    this.load.image('circle', '/images/circle.png');
-    this.load.image('point', '/images/waypoint.png');
+    this.load.image('background', 'images/background.jpg');
+    this.load.image('circle', 'images/circle.png');
+    this.load.image('point', 'images/waypoint.png');
     this.load.atlasJSONHash('player', 'images/spaceship.png', 'images/spaceship.json');
   
 
