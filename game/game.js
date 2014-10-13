@@ -1,11 +1,13 @@
 (function() {
   var game, mainState;
 
-  game = new Phaser.Game(1000, 600, Phaser.AUTO, 'game');
+  game = new Phaser.Game(1000, 600, Phaser.CANVAS, 'game');
 
   mainState = {
     preload: function() {
       this.stage.backgroundColor = '#000000';
+      this.stage.smoothed = false;
+      PIXI.scaleModes.DEFAULT = PIXI.scaleModes.NEAREST;
       this.load.image('background', '/images/background.jpg');
       this.load.image('circle', '/images/circle.png');
       this.load.image('point', '/images/waypoint.png');
@@ -24,7 +26,7 @@
       this.player.body.collideWorldBounds = true;
       this.currentSpeed = 0;
       this.waypoint = [];
-      this.pointMode = false;
+      this.waypointMode = false;
       this.nextPos = {
         x: 0,
         y: 0,
@@ -33,10 +35,10 @@
       this.moving = false;
       shift = this.input.keyboard.addKey(Phaser.Keyboard.SHIFT);
       shift.onDown.add(function() {
-        return this.pointMode = true;
+        return this.waypointMode = true;
       }, this);
       shift.onUp.add(function() {
-        return this.pointMode = false;
+        return this.waypointMode = false;
       }, this);
       return this.input.onDown.add(function() {
         var point, _i, _len, _ref;
@@ -49,14 +51,17 @@
           x: 2,
           y: 2
         }, 200).start();
-        if (this.pointMode) {
+        if (this.waypointMode) {
           point = this.add.sprite(this.input.x, this.input.y, 'point');
           point.anchor.setTo(0.5, 0.5);
-          return this.waypoint.push({
+          this.waypoint.push({
             x: this.input.x,
             y: this.input.y,
             sprite: point
           });
+          if (this.waypoint.length === 1) {
+            return this.gotoPosition(this.waypoint[0].x, this.waypoint[0].y);
+          }
         } else {
           _ref = this.waypoint;
           for (_i = 0, _len = _ref.length; _i < _len; _i++) {
@@ -79,7 +84,7 @@
       }
       if (Phaser.Rectangle.contains(this.player.body, this.nextPos.x, this.nextPos.y)) {
         this.player.body.velocity.set(0, 0);
-        if (this.waypoint.length > 0) {
+        if (this.waypoint.length > 0 && Phaser.Rectangle.contains(this.player.body, this.waypoint[0].x, this.waypoint[0].y)) {
           this.waypoint[0].sprite.kill();
           this.waypoint.shift();
         } else {
@@ -93,16 +98,16 @@
       }
     },
     gotoPosition: function(x, y) {
-      var rotation;
-      console.log("goto");
+      var angle, rotation;
       this.nextPos = {
         x: x,
         y: y
       };
       rotation = this.physics.arcade.moveToXY(this.player, x, y, 100) + Phaser.Math.degToRad(90);
+      angle = Phaser.Math.radToDeg(rotation);
       return this.add.tween(this.player).to({
         rotation: rotation
-      }, 100, Phaser.Easing.Linear.None, true, 100).start();
+      }, 200, Phaser.Easing.Linear.None, false).start();
     }
   };
 
