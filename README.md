@@ -1,5 +1,12 @@
 # Spaceship
 
+## Try it
+
+http://volpeo.github.io/spaceship/game/
+
+
+## How to compile files locally ?
+
 You need node js to compile files.
 
 Then
